@@ -67,3 +67,7 @@ product-search-results/
 
 # Cache
 .cache/
+
+# Exclude specific folders
+on-demand-scrapping/
+.cursor/rules/taskmaster/
