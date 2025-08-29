@@ -1,0 +1,175 @@
+{
+  "master": {
+    "tasks": [
+      {
+        "id": 1,
+        "title": "Setup Project Repository and Environment",
+        "description": "Initialize the project repository and configure the development environment for the crewai-based category mapping component.",
+        "details": "Create a new repository or branch within the existing auto-mapping service. Set up Python environment with required dependencies, including crewai, PGSearchTool, and LLM integration libraries. Reference the on-demand-scrapping directory for workflow setup.\n<info added on 2025-08-29T15:08:15.922Z>\nANALYSIS COMPLETED - Current Project State:\n\nWhat's Already Done:\n1. CrewAI structure exists in auto-mapping/crew_components/ (agents.py, tasks.py, crew.py)\n2. Main execution file: auto_mapping.py with DB config and example usage\n3. Backend components: category_generator.py, database.py, routes.py, preprocess.py\n4. Reference implementation: on-demand-scrapping/ has full working CrewAI setup\n\nWhat Needs Setup:\n1. Missing CrewAI dependencies: auto-mapping/requirements.txt missing crewai>=0.150.0, crewai-tools>=0.59.0\n2. No .env file: Database connection requires POSTGRES_* environment variables\n3. Python virtual environment: Need to create and activate venv\n4. Dependencies installation: Merge and install requirements from both auto-mapping and on-demand-scrapping references\n\nNext Steps:\n1. Create virtual environment in auto-mapping directory\n2. Update requirements.txt to include CrewAI dependencies\n3. Create .env file with database configuration template\n4. Install all dependencies\n5. Test basic CrewAI functionality with existing example\n\nProject structure is solid - main work is environment setup and dependency management.\n</info added on 2025-08-29T15:08:15.922Z>",
+        "testStrategy": "Verify repository structure, environment setup, and successful installation of all dependencies by running a basic crewai agent example.",
+        "priority": "high",
+        "dependencies": [],
+        "status": "in-progress",
+        "subtasks": []
+      },
+      {
+        "id": 2,
+        "title": "Design Input and Output Data Schemas",
+        "description": "Define and implement the input and output data structures for product mapping requests and responses.",
+        "details": "Create Python dataclasses or Pydantic models for input (product_id, title, description, url, breadcrumbs) and output (product_id, level_1 to level_7). Ensure nullability for levels 6 and 7. Validate against provided PRD JSON examples.",
+        "testStrategy": "Unit test schema validation with various sample inputs and outputs, including edge cases (missing breadcrumbs, short category paths).",
+        "priority": "high",
+        "dependencies": [
+          1
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 3,
+        "title": "Implement PGSearchTool Integration",
+        "description": "Integrate PGSearchTool for efficient category hierarchy search within the database.",
+        "details": "Develop a wrapper for PGSearchTool that exposes search functionality to crewai agents. Ensure support for querying category paths based on product information. Mock database for local testing if necessary.",
+        "testStrategy": "Test PGSearchTool with sample queries and verify correct category path retrieval. Validate error handling for invalid queries.",
+        "priority": "high",
+        "dependencies": [
+          1
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 4,
+        "title": "Develop Mapper Agent Logic",
+        "description": "Implement the Mapper Agent to map products to category paths using prioritized product information and PGSearchTool.",
+        "details": "Create a crewai agent class for the Mapper Agent. Implement logic to prioritize url and breadcrumbs, fallback to description if needed, and use PGSearchTool to search category hierarchy. Use LLM to select the most appropriate category path. Output dictionary with Level 1-7 keys.",
+        "testStrategy": "Unit test agent with diverse product inputs, including cases with/without breadcrumbs and url info. Validate output format and mapping accuracy.",
+        "priority": "high",
+        "dependencies": [
+          2,
+          3
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 5,
+        "title": "Develop Validation Agent Logic",
+        "description": "Implement the Validation Agent to assess and validate the Mapper Agent's proposed category path.",
+        "details": "Create a crewai agent class for the Validation Agent. Accept product info and proposed path, use LLM to assess correctness, and PGSearchTool to suggest corrections if needed. Output JSON with status, confidence_score, and corrected_path if rejected.",
+        "testStrategy": "Unit test agent with correct and incorrect mappings. Validate status, confidence score, and correction logic. Test edge cases (ambiguous products, missing data).",
+        "priority": "high",
+        "dependencies": [
+          4,
+          3
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 6,
+        "title": "Implement CrewAI Workflow Orchestration",
+        "description": "Develop the orchestration logic to manage the data flow between Mapper Agent, Validation Agent, and the auto-mapping service.",
+        "details": "Create a workflow manager that receives product data, invokes Mapper Agent, passes results to Validation Agent, and returns final output. Ensure seamless integration with auto-mapping service interface.",
+        "testStrategy": "Integration test with end-to-end product mapping requests. Validate correct sequencing and output delivery.",
+        "priority": "high",
+        "dependencies": [
+          4,
+          5
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 7,
+        "title": "Error Handling and Fallback Mechanisms",
+        "description": "Implement robust error handling for agent failures, tool errors, and invalid outputs.",
+        "details": "Add try/except blocks around agent and tool invocations. Log errors with product ID, flag failed mappings in the database with status 'mapping_failed', and ensure process continuity.",
+        "testStrategy": "Simulate agent/tool failures and verify error logging, database flagging, and uninterrupted workflow.",
+        "priority": "high",
+        "dependencies": [
+          6
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 8,
+        "title": "Database Integration for Category Paths and Flags",
+        "description": "Integrate with the database to store validated category paths and mapping failure flags.",
+        "details": "Implement database access layer for writing final category paths and updating product status. Ensure atomic transactions and rollback on failure.",
+        "testStrategy": "Test database writes for successful and failed mappings. Validate data integrity and rollback behavior.",
+        "priority": "high",
+        "dependencies": [
+          7
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 9,
+        "title": "Implement Logging Table for Feedback Loop",
+        "description": "Create a dedicated logging table to store mapping results, rejections, and manual corrections for future analysis.",
+        "details": "Design and migrate a new logging table schema. Implement logic to log every mapping attempt, including agent outputs and manual corrections.",
+        "testStrategy": "Verify logging of all mapping events. Test retrieval and analysis queries on the logging table.",
+        "priority": "medium",
+        "dependencies": [
+          8
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 10,
+        "title": "Performance and Scalability Optimization",
+        "description": "Optimize the crewai workflow and database interactions for high throughput and scalability.",
+        "details": "Profile agent execution and database queries. Implement batching, caching, and asynchronous processing where appropriate. Monitor resource usage and tune for performance.",
+        "testStrategy": "Load test with large product datasets. Measure throughput, latency, and resource utilization. Validate system stability under load.",
+        "priority": "medium",
+        "dependencies": [
+          6,
+          8
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 11,
+        "title": "Documentation and Maintainability Enhancements",
+        "description": "Document the codebase, agent logic, workflows, and integration points for maintainability.",
+        "details": "Write comprehensive docstrings, README, and architecture diagrams. Document agent prompt templates and PGSearchTool usage. Reference on-demand-scrapping examples.",
+        "testStrategy": "Peer review documentation for completeness and clarity. Validate onboarding of new developers using docs.",
+        "priority": "medium",
+        "dependencies": [
+          4,
+          5,
+          6
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 12,
+        "title": "Unit and Integration Test Suite",
+        "description": "Develop a comprehensive test suite covering all agents, tools, workflows, and database interactions.",
+        "details": "Implement unit tests for agents and tools, integration tests for workflow orchestration, and end-to-end tests for the full mapping process. Use pytest or similar framework.",
+        "testStrategy": "Run all tests and ensure high coverage. Validate against PRD acceptance criteria and edge cases.",
+        "priority": "high",
+        "dependencies": [
+          4,
+          5,
+          6,
+          7,
+          8
+        ],
+        "status": "pending",
+        "subtasks": []
+      }
+    ],
+    "metadata": {
+      "created": "2025-08-29T13:53:37.246Z",
+      "updated": "2025-08-29T15:07:17.109Z",
+      "description": "Tasks for master context"
+    }
+  }
+}

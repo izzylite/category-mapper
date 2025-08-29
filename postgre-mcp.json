@@ -1,0 +1,19 @@
+{
+  "mcpServers": {
+    "postgres": {
+      "command": "cmd",
+      "args": [
+        "/c",
+        "npx",
+        "-y",
+        "@smithery/cli@latest",
+        "run",
+        "@smithery-ai/postgres",
+        "--key",
+        "36939c42-8e77-4776-85c5-c9b01b6bf426",
+        "--profile",
+        "alive-magpie-MgpQLY"
+      ]
+    }
+  }
+}
