@@ -146,13 +146,13 @@ def update_env_for_tunnel(tunnel):
         
         for line in env_lines:
             if line.startswith('POSTGRES_HOST='):
-                new_env_lines.append('POSTGRES_HOST=localhost\n')
+                new_env_lines.append('POSTGRES_HOST=127.0.0.1\n')
                 updated_vars.add('POSTGRES_HOST')
             elif line.startswith('POSTGRES_PORT='):
                 new_env_lines.append(f'POSTGRES_PORT={tunnel.local_port}\n')
                 updated_vars.add('POSTGRES_PORT')
             elif line.startswith('POSTGRES_CONNECTION_STRING='):
-                new_connection = f"postgresql://cat_manager:004IuYdPgdNtzhYpCFNc2ngzyO6soW@localhost:{tunnel.local_port}/aicategorymapping"
+                new_connection = f"postgresql://cat_manager:004IuYdPgdNtzhYpCFNc2ngzyO6soW@127.0.0.1:{tunnel.local_port}/aicategorymapping"
                 new_env_lines.append(f'POSTGRES_CONNECTION_STRING={new_connection}\n')
                 updated_vars.add('POSTGRES_CONNECTION_STRING')
             else:
@@ -160,11 +160,11 @@ def update_env_for_tunnel(tunnel):
         
         # Add missing variables
         if 'POSTGRES_HOST' not in updated_vars:
-            new_env_lines.append('POSTGRES_HOST=localhost\n')
+            new_env_lines.append('POSTGRES_HOST=127.0.0.1\n')
         if 'POSTGRES_PORT' not in updated_vars:
             new_env_lines.append(f'POSTGRES_PORT={tunnel.local_port}\n')
         if 'POSTGRES_CONNECTION_STRING' not in updated_vars:
-            new_connection = f"postgresql://cat_manager:004IuYdPgdNtzhYpCFNc2ngzyO6soW@localhost:{tunnel.local_port}/aicategorymapping"
+            new_connection = f"postgresql://cat_manager:004IuYdPgdNtzhYpCFNc2ngzyO6soW@127.0.0.1:{tunnel.local_port}/aicategorymapping"
             new_env_lines.append(f'POSTGRES_CONNECTION_STRING={new_connection}\n')
         
         # Write updated .env
